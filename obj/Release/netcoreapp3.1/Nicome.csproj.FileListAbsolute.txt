@@ -1,0 +1,13 @@
+G:\Projects\C#\04_nicome\Nicome\bin\Release\netcoreapp3.1\Nicome.exe
+G:\Projects\C#\04_nicome\Nicome\bin\Release\netcoreapp3.1\Nicome.deps.json
+G:\Projects\C#\04_nicome\Nicome\bin\Release\netcoreapp3.1\Nicome.runtimeconfig.json
+G:\Projects\C#\04_nicome\Nicome\bin\Release\netcoreapp3.1\Nicome.runtimeconfig.dev.json
+G:\Projects\C#\04_nicome\Nicome\bin\Release\netcoreapp3.1\Nicome.dll
+G:\Projects\C#\04_nicome\Nicome\bin\Release\netcoreapp3.1\AngleSharp.dll
+G:\Projects\C#\04_nicome\Nicome\obj\Release\netcoreapp3.1\Nicome.AssemblyInfoInputs.cache
+G:\Projects\C#\04_nicome\Nicome\obj\Release\netcoreapp3.1\Nicome.AssemblyInfo.cs
+G:\Projects\C#\04_nicome\Nicome\obj\Release\netcoreapp3.1\Nicome.csproj.CoreCompileInputs.cache
+G:\Projects\C#\04_nicome\Nicome\obj\Release\netcoreapp3.1\Nicome.csproj.CopyComplete
+G:\Projects\C#\04_nicome\Nicome\obj\Release\netcoreapp3.1\Nicome.dll
+G:\Projects\C#\04_nicome\Nicome\obj\Release\netcoreapp3.1\Nicome.genruntimeconfig.cache
+G:\Projects\C#\04_nicome\Nicome\obj\Release\netcoreapp3.1\Nicome.csprojAssemblyReference.cache

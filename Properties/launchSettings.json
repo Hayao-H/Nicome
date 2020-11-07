@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "開始": {
+      "commandName": "Project",
+      "commandLineArgs": "-i sm9 -u shun.hkd@gmail.com -p 93201574",
+      "ErrorString": "Unexpected character encountered while parsing value: s. Path '', line 0, position 0."
+    }
+  }
+}

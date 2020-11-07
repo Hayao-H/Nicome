@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CS8603: Null 参照戻り値である可能性があります。
+dotnet_diagnostic.CS8603.severity = suggestion
+
+# CS8602: null 参照の可能性があるものの逆参照です。
+dotnet_diagnostic.CS8602.severity = suggestion

@@ -3,11 +3,8 @@ using Nicome.WWW.API.Types.WatchPage;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using Enums = Nicome.Enums;
-using System.Text;
 using System.Data;
-using System.Reflection;
 using System.Diagnostics;
 
 namespace Nicome.Store
@@ -140,6 +137,7 @@ namespace Nicome.Store
             abstract public string GetNicoBaseAddress();
             abstract public string GetNicoLoginAddress();
             abstract public bool DoDownloadCommentLog();
+            abstract public List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -243,11 +241,21 @@ namespace Nicome.Store
                 return this.Download.CommentLog;
             }
 
+            /// <summary>
+            /// 時間帯NGデータを返す
+            /// </summary>
+            /// <returns></returns>
+            public override List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime()
+            {
+                return this.Ngs.NgTimes;
+            }
+
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
             public FileConfig Files { get; set; } = new FileConfig();
             public DownloadInfo Download { get; set; } = new DownloadInfo();
+            public NgInfo Ngs { get; set; } = new NgInfo();
 
         }
 
@@ -281,6 +289,11 @@ namespace Nicome.Store
             public string BaseDirectory { get; set; } = Directory.GetParent(Process.GetCurrentProcess().MainModule.FileName).FullName;
             public string FolderName { get; set; } = "保存したコメント";
             public string Format { get; set; } = "[<id>]<title>";
+        }
+
+        class NgInfo
+        {
+            public List<NicoUtl.CommentTime.CommentTimeSpan> NgTimes { get; set; } = new List<NicoUtl.CommentTime.CommentTimeSpan>();
         }
     }
 }

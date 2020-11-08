@@ -1,10 +1,10 @@
 ﻿using AngleSharp.Html.Parser;
+using Nicome.Utils;
 using System;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WatchPage = Nicome.WWW.API.Types.WatchPage;
-using Nicome.Utils;
 using Store = Nicome.Store;
+using WatchPage = Nicome.WWW.API.Types.WatchPage;
 
 namespace Nicome.WWW
 {
@@ -55,7 +55,7 @@ namespace Nicome.WWW
                 await NicoClient.LoginAsync(store.GetUserName(), store.GetPassWord());
                 ApiData = await GetApiData(id);
                 var video = GetVideoInfo();
-                logger.Log($"[{video.id}] 「 {video.title} 」の{message}を開始します。");
+                logger.Log($"[{video.Id}] 「 {video.Title} 」の{message}を開始します。");
             }
             catch (Exception e)
             {
@@ -104,9 +104,9 @@ namespace Nicome.WWW
         /// <returns></returns>
         public VideoInfo GetVideoInfo()
         {
-            if (ApiData != null && ApiData.video != null && ApiData.video.title != null && ApiData.video.id != null)
+            if (ApiData != null && ApiData.video != null && ApiData.video.title != null && ApiData.video.id != null&&ApiData.video.postedDateTime!=null)
             {
-                return new VideoInfo(ApiData.video.title, ApiData.owner == null ? "" : ApiData.owner.nickname == null ? "" : ApiData.owner.nickname, GeneralID);
+                return new VideoInfo(ApiData.video.title, ApiData.owner == null ? "" : ApiData.owner.nickname == null ? "" : ApiData.owner.nickname, GeneralID, ApiData.video.postedDateTime);
             }
             else
             {
@@ -128,15 +128,24 @@ namespace Nicome.WWW
     class VideoInfo
     {
 
-        public VideoInfo(string _title, string _user, string _id)
+        public VideoInfo(string _title, string _user, string _id,string _dt)
         {
-            title = _title;
-            user = _user;
-            id = _id;
+            Title = _title;
+            User = _user;
+            Id = _id;
+            try
+            {
+                this.PostedDateTime = DateTime.Parse(_dt);
+            }
+            catch
+            {
+                throw new Exception("動画の投稿日時の解析に失敗しました");
+            }
         }
 
-        public string title;
-        public string user;
-        public string id;
+        public string Title { get; set; }
+        public string User { get; set; }
+        public string Id { get; set; }
+        public DateTime PostedDateTime { get; set; }
     }
 }

@@ -147,6 +147,8 @@ namespace Nicome.CLI
             AddOption("ngftdelay", NicoEnums::Option.NG_DELAY);
             //コマンドNG
             AddOption("ngmail", NicoEnums::Option.NG_MAIL);
+            //ユーザーNG
+            AddOption("nguser", NicoEnums::Option.NG_UID);
 
             //フィルター追加
             AddOptionFilter((string argment) =>
@@ -235,6 +237,15 @@ namespace Nicome.CLI
                 if (Regex.IsMatch(argment, "^(-nc|--ng-command)$"))
                 {
                     argment = "ngmail";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-nu|--ng-user)$"))
+                {
+                    argment = "nguser";
                 }
                 return argment;
             });

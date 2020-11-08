@@ -27,6 +27,7 @@ namespace Nicome.Comment
 
             if (IsTimeNg(comment,data.GetNgTime())) return true;
             if (IsCommandNg(comment,data.GetNgCommand())) return true;
+            if (IsUserNg(comment,data.GetNgUser())) return true;
             return false;
         }
 
@@ -70,6 +71,26 @@ namespace Nicome.Comment
             foreach (var ng in ngData)
             {
                 if (comment.chat.mail!=null&&comment.chat.mail.Contains(ng)) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// コマンドNG
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="ngData"></param>
+        /// <returns></returns>
+        private bool IsUserNg(NicoComment::JsonComment comment, List<string> ngData)
+        {
+            if (comment.chat == null)
+            {
+                throw new ArgumentException("comment must be a chat, not a thread.");
+            }
+            foreach (var ng in ngData)
+            {
+                if (comment.chat.mail != null && comment.chat.user_id.Contains(ng)) return true;
             }
 
             return false;

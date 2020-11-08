@@ -152,6 +152,18 @@ namespace Nicome.Store
                 }
             }
 
+            //ユーザーNG
+            if (parser.Contains("nguser"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("nguser", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgUsers.AddRange(ngs);
+                }
+            }
+
         }
 
         /// <summary>
@@ -183,6 +195,7 @@ namespace Nicome.Store
             abstract public void SetPostDate(DateTime p);
             abstract public List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime();
             abstract public List<string> GetNgCommand();
+            abstract public List<string> GetNgUser();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -327,7 +340,17 @@ namespace Nicome.Store
             {
                 return this.Ngs.NgCommands;
             }
-            public UserInfo User { get; set; } = new UserInfo();
+
+            /// <summary>
+            /// NGユーザーを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgUser()
+            {
+                return this.Ngs.NgUsers;
+            }
+
+        public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
             public FileConfig Files { get; set; } = new FileConfig();
@@ -373,6 +396,7 @@ namespace Nicome.Store
             public List<NicoUtl.CommentTime.CommentTimeSpan> NgTimes { get; set; } = new List<NicoUtl.CommentTime.CommentTimeSpan>();
             public bool IsStartFromPostDate = false;
             public List<string> NgCommands { get; set; } = new List<string>();
+            public List<string> NgUsers { get; set; } = new List<string>();
         }
     }
 }

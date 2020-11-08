@@ -24,7 +24,8 @@ namespace Nicome.Enums
         NG_BY_TIME,
         NG_FROM_POST_DATETIME,
         NG_DELAY,
-        NG_MAIL
+        NG_MAIL,
+        NG_UID
     }
 
     enum LOGLEVEL

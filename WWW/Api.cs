@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nicome.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -578,7 +579,7 @@ namespace Nicome.WWW.API.Types
                         }
                         set
                         {
-                            this.mailField = value;
+                            this.mailField = XmlUtils.FormatXMLProp(value);
                         }
                     }
 
@@ -648,7 +649,7 @@ namespace Nicome.WWW.API.Types
                         }
                         set
                         {
-                            this.valueField = value;
+                            this.valueField = XmlUtils.FormatXMLProp(value);
                         }
                     }
                 }

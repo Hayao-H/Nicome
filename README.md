@@ -15,3 +15,9 @@ nicome <オプションキー> <値> <オプションキー> <値>...
 -f | --folder | 保存フォルダー名。実行ファイルからの相対パス | 保存したコメント
 -k | --kako | 過去ログ取得フラグ。値は不要。| (取得しない)
 -l | --loglevel | quiet/error/warn/log/info/debug | log
+# 動作環境
+- Windows(Win10 homeで動作確認済)
+# 開発環境
+- .Net Core 3.1
+- Visual Studio Community 2019
+- VS code

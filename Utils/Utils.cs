@@ -13,6 +13,10 @@ namespace Nicome.Utils
             return dtOffset.ToUnixTimeSeconds();
         }
 
+        public static DateTime FromUnixTime(long t)
+        {
+            return DateTimeOffset.FromUnixTimeSeconds(t-(long)TimeSpan.FromHours(9).TotalSeconds).ToLocalTime().DateTime;
+        }
 
         public static List<CommentTime.CommentTimeSpan> ParseDateTime(string time)
         {
@@ -109,6 +113,16 @@ namespace Nicome.Utils
             /// 分
             /// </summary>
             public int Minute { get; set; }
+        
+            /// <summary>
+            /// 指定した日付でDatetime型のインスタンスを返す
+            /// </summary>
+            /// <param name="source"></param>
+            /// <returns></returns>
+            public DateTime ToDatetime(DateTime source)
+            {
+                return new DateTime(source.Year, source.Month, source.Day, this.Hour, this.Minute,0);
+            }
         }
 
     }

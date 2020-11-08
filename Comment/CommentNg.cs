@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nicome.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,19 @@ namespace Nicome.Comment
     }
     public class CommentNg : ICommentNg
     {
+        private string moduleName = "Nicome.Comment.CommentNg";
+        /// <summary>
+        /// NG処理
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <returns></returns>
         public bool JudgeAll(NicoComment::JsonComment comment)
         {
+            var logger = NicoLogger.GetLogger();
             var data = new Store.Store().GetData();
+
             if (IsTimeNg(comment,data.GetNgTime())) return true;
+            if (IsCommandNg(comment,data.GetNgCommand())) return true;
             return false;
         }
 
@@ -25,7 +35,7 @@ namespace Nicome.Comment
         /// </summary>
         /// <param name="comment"></param>
         /// <returns></returns>
-        public bool IsTimeNg(NicoComment::JsonComment comment, List<NicoUtils.CommentTime.CommentTimeSpan> ngData)
+        private bool IsTimeNg(NicoComment::JsonComment comment, List<NicoUtils.CommentTime.CommentTimeSpan> ngData)
         {
             if (comment.chat == null)
             {
@@ -40,6 +50,26 @@ namespace Nicome.Comment
                 {
                     return true;
                 }
+            }
+
+            return false;
+        }
+    
+        /// <summary>
+        /// コマンドNG
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="ngData"></param>
+        /// <returns></returns>
+        private bool IsCommandNg(NicoComment::JsonComment comment,List<string> ngData)
+        {
+            if (comment.chat == null)
+            {
+                throw new ArgumentException("comment must be a chat, not a thread.");
+            }
+            foreach (var ng in ngData)
+            {
+                if (comment.chat.mail!=null&&comment.chat.mail.Contains(ng)) return true;
             }
 
             return false;

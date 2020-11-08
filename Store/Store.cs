@@ -140,6 +140,18 @@ namespace Nicome.Store
                 }
             }
 
+            //コマンドNG
+            if (parser.Contains("ngmail"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("ngmail", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgCommands.AddRange(ngs);
+                }
+            }
+
         }
 
         /// <summary>
@@ -170,6 +182,7 @@ namespace Nicome.Store
             abstract public bool IsStartFromPostDate();
             abstract public void SetPostDate(DateTime p);
             abstract public List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime();
+            abstract public List<string> GetNgCommand();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -306,6 +319,14 @@ namespace Nicome.Store
                 }
             }
 
+            /// <summary>
+            /// NGコマンドを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgCommand()
+            {
+                return this.Ngs.NgCommands;
+            }
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
@@ -351,6 +372,7 @@ namespace Nicome.Store
         {
             public List<NicoUtl.CommentTime.CommentTimeSpan> NgTimes { get; set; } = new List<NicoUtl.CommentTime.CommentTimeSpan>();
             public bool IsStartFromPostDate = false;
+            public List<string> NgCommands { get; set; } = new List<string>();
         }
     }
 }

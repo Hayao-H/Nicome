@@ -5,3 +5,6 @@ dotnet_diagnostic.CS8603.severity = suggestion
 
 # CS8602: null 参照の可能性があるものの逆参照です。
 dotnet_diagnostic.CS8602.severity = suggestion
+
+# CS8767: パラメーターの型における参照型の NULL 値の許容が、暗黙的に実装されるメンバーと一致しません。おそらく、NULL 値の許容の属性が原因です。
+dotnet_diagnostic.CS8767.severity = none

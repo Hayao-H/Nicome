@@ -14,112 +14,103 @@ namespace Nicome.Utils
         }
 
 
-        public static List<CommentTimeSpan> ParseDateTime(string time)
+        public static List<CommentTime.CommentTimeSpan> ParseDateTime(string time)
         {
-            var timeList = new List<CommentTimeSpan>();
+            var timeList = new List<CommentTime.CommentTimeSpan>();
             string[] timesArray = time.Split(',');
 
             foreach (var t in timesArray)
             {
-                timeList.Add(new CommentTimeSpan(t));
+                timeList.Add(new CommentTime.CommentTimeSpan(t));
             }
 
             return timeList;
         }
     }
 
-    public class CommentTimeSpan:IEquatable<CommentTimeSpan>
+    namespace CommentTime
     {
-        public CommentTimeSpan(string time)
+        public class CommentTimeSpan
         {
-            if (!time.Contains('-'))
+            public CommentTimeSpan(string time)
             {
-                throw new ArgumentException(this.ErrorMessage);
-            }
-            else if (time.Where(c => c == '-').Count() > 1)
-            {
-                throw new ArgumentException(this.ErrorMessage);
+                if (!time.Contains('-'))
+                {
+                    throw new ArgumentException(this.ErrorMessage);
+                }
+                else if (time.Where(c => c == '-').Count() > 1)
+                {
+                    throw new ArgumentException(this.ErrorMessage);
+                }
+
+                string[] fromto = time.Split('-');
+                this.From = new TimeInfo(fromto[0]);
+                this.To = new TimeInfo(fromto[1]);
+
             }
 
-            string[] fromto = time.Split('-');
-            this.From = new TimeInfo(fromto[0]);
-            this.To = new TimeInfo(fromto[1]);
+            /// <summary>
+            /// エラーメッセージ
+            /// </summary>
+            private string ErrorMessage = "不正な時間指定の形式です。(\"-\"は一文字だけです)";
 
+            /// <summary>
+            /// エラーメッセージ
+            /// </summary>
+            private string ErrorMessageNoSplitChar = "不正な時間指定の形式です。(時間は範囲を指定して下さい)";
+
+            public TimeInfo From { get; private set; }
+
+            public TimeInfo To { get; private set; }
         }
 
-        /// <summary>
-        /// エラーメッセージ
-        /// </summary>
-        private string ErrorMessage = "不正な時間指定の形式です。(\"-\"は一文字だけです)";
-
-        /// <summary>
-        /// エラーメッセージ
-        /// </summary>
-        private string ErrorMessageNoSplitChar = "不正な時間指定の形式です。(時間は範囲を指定して下さい)";
-
-        public TimeInfo From { get; private set; }
-
-        public TimeInfo To { get; private set; }
-
-        public bool Equals(CommentTimeSpan other)
+        public class TimeInfo
         {
-            bool fromeq = this.From.Hour == other.From.Hour && this.From.Minute == other.From.Minute;
-            bool toeq = this.To.Hour == other.To.Hour && this.To.Minute == other.To.Minute;
-            return true;
+            public TimeInfo(string time)
+            {
+                if (!time.Contains(':'))
+                {
+                    throw new ArgumentException(this.ErrorMessage);
+                }
+                else if (time.Where(c => c == ':').Count() > 1)
+                {
+                    throw new ArgumentException(this.ErrorMessage);
+                }
+
+                string[] hourminite = time.Split(':');
+
+                try
+                {
+                    this.Hour = int.Parse(hourminite[0]);
+                    this.Hour = int.Parse(hourminite[1]);
+                }
+                catch (ArgumentException)
+                {
+                    throw new Exception(ErrorMessageNotNumber);
+                }
+            }
+
+            /// <summary>
+            /// エラーメッセージ
+            /// </summary>
+            private string ErrorMessage = "不正な時間指定の形式です。(\":\"は一文字だけです)";
+
+            /// <summary>
+            /// エラーメッセージ
+            /// </summary>
+            private string ErrorMessageNotNumber = "日時は数字である必要があります。";
+
+            /// <summary>
+            /// 時間
+            /// </summary>
+            public int Hour { get; set; }
+
+            /// <summary>
+            /// 分
+            /// </summary>
+            public int Minute { get; set; }
         }
 
-        public override int GetHashCode()
-        {
-            //return this.From.Hour.GetHashCode()^this.From.Minute.GetHashCode();
-            return 1;
-        }
-    }
-
-    public class TimeInfo
-    {
-        public TimeInfo(string time)
-        {
-            if (!time.Contains(':'))
-            {
-                throw new ArgumentException(this.ErrorMessage);
-            }
-            else if (time.Where(c => c == ':').Count() > 1)
-            {
-                throw new ArgumentException(this.ErrorMessage);
-            }
-
-            string[] hourminite = time.Split(':');
-
-            try
-            {
-                this.Hour = int.Parse(hourminite[0]);
-                this.Hour = int.Parse(hourminite[1]);
-            }
-            catch(ArgumentException)
-            {
-                throw new Exception(ErrorMessageNotNumber);
-            }
-        }
-
-        /// <summary>
-        /// エラーメッセージ
-        /// </summary>
-        private string ErrorMessage = "不正な時間指定の形式です。(\":\"は一文字だけです)";
-
-        /// <summary>
-        /// エラーメッセージ
-        /// </summary>
-        private string ErrorMessageNotNumber = "日時は数字である必要があります。";
-
-        /// <summary>
-        /// 時間
-        /// </summary>
-        public int Hour { get; set; }
-
-        /// <summary>
-        /// 分
-        /// </summary>
-        public int Minute { get; set; }
     }
 
     public class XmlUtils

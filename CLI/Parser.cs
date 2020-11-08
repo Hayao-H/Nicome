@@ -141,6 +141,9 @@ namespace Nicome.CLI
             AddOption("user", NicoEnums::Option.USER);
             AddOption("pass", NicoEnums::Option.PASS);
             AddOption("comlog", NicoEnums::Option.COM_LOG);
+            AddOption("ngft", NicoEnums::Option.COM_LOG);
+            AddOption("ngftvpdt", NicoEnums::Option.COM_LOG);
+            AddOption("ngftdelay", NicoEnums::Option.COM_LOG);
 
             //フィルター追加
             AddOptionFilter((string argment) =>
@@ -193,6 +196,33 @@ namespace Nicome.CLI
                 if (Regex.IsMatch(argment, "^(-k|--kako)$"))
                 {
                     argment = "comlog";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(--ng-time-from-to)$"))
+                {
+                    argment = "ngft";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(--ng-time-from-to-postdate)$"))
+                {
+                    argment = "ngftvpdt";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(--ng-time-from-to-delay)$"))
+                {
+                    argment = "ngftdelay";
                 }
                 return argment;
             });

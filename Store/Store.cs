@@ -110,6 +110,36 @@ namespace Nicome.Store
                 Store.data.Download.CommentLog = true;
 
             }
+
+            //時間帯NG
+            if (parser.Contains("ngft"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("ngft", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    //時間帯NG
+                    if (parser.Contains("ngftdelay"))
+                    {
+                        CLI.CLICommand? arg2;
+                        parser.TryGetOption("ngftdelay", out arg2);
+                        if (arg2 != null && arg2.Parameter != null)
+                        {
+                            Store.data.Ngs.NgTimes = NicoUtl.DateTimeUtils.ParseDateTime(arg.Parameter, arg2.Parameter);
+                        }
+                    }
+                    else
+                    {
+                        Store.data.Ngs.NgTimes = NicoUtl.DateTimeUtils.ParseDateTime(arg.Parameter);
+                    }
+
+                    if (parser.Contains("ngftvpdt"))
+                    {
+                        Store.data.Ngs.IsStartFromPostDate = true;
+                    }
+                }
+            }
+
         }
 
         /// <summary>

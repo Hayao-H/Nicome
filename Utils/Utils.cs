@@ -30,6 +30,22 @@ namespace Nicome.Utils
 
             return timeList;
         }
+
+        public static List<CommentTime.CommentTimeSpan> ParseDateTime(string time,string delay)
+        {
+            var timeList = new List<CommentTime.CommentTimeSpan>();
+            string[] timesArray = time.Split(',');
+
+            int d;
+            if (!int.TryParse(delay, out d)) throw new ArgumentException("オプション\"--ng-time-from-to-delay\"は数値である必要があります");
+
+            foreach (var t in timesArray)
+            {
+                timeList.Add(new CommentTime.CommentTimeSpan(t,d));
+            }
+
+            return timeList;
+        }
     }
 
     namespace CommentTime
@@ -102,6 +118,8 @@ namespace Nicome.Utils
             {
                 this.From.PostDatetime = postdate;
                 this.To.PostDatetime = postdate;
+
+                Console.WriteLine($"{this.From.ToDatetime(DateTime.Now)}-{this.To.ToDatetime(DateTime.Now)}");
             }
 
             public TimeInfo From { get; private set; }

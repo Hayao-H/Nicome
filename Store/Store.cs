@@ -137,6 +137,8 @@ namespace Nicome.Store
             abstract public string GetNicoBaseAddress();
             abstract public string GetNicoLoginAddress();
             abstract public bool DoDownloadCommentLog();
+            abstract public bool IsStartFromPostDate();
+            abstract public void SetPostDate(DateTime p);
             abstract public List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
@@ -250,6 +252,30 @@ namespace Nicome.Store
                 return this.Ngs.NgTimes;
             }
 
+            /// <summary>
+            /// 投稿日起点型NGであるかどうかを返す
+            /// </summary>
+            /// <returns></returns>
+            public override bool IsStartFromPostDate()
+            {
+                return this.Ngs.IsStartFromPostDate;
+            }
+
+            /// <summary>
+            /// 投稿日時を設定
+            /// </summary>
+            /// <param name="posted"></param>
+            public override void SetPostDate(DateTime posted)
+            {
+                if (this.Ngs.IsStartFromPostDate)
+                {
+                    foreach (var ng in this.Ngs.NgTimes)
+                    {
+                        ng.SetPostDate(posted);
+                    }
+                }
+            }
+
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
@@ -294,6 +320,7 @@ namespace Nicome.Store
         class NgInfo
         {
             public List<NicoUtl.CommentTime.CommentTimeSpan> NgTimes { get; set; } = new List<NicoUtl.CommentTime.CommentTimeSpan>();
+            public bool IsStartFromPostDate = false;
         }
     }
 }

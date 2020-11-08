@@ -15,7 +15,7 @@ namespace Nicome.Utils
 
         public static DateTime FromUnixTime(long t)
         {
-            return DateTimeOffset.FromUnixTimeSeconds(t-(long)TimeSpan.FromHours(9).TotalSeconds).ToLocalTime().DateTime;
+            return DateTimeOffset.FromUnixTimeSeconds(t).ToLocalTime().DateTime;
         }
 
         public static List<CommentTime.CommentTimeSpan> ParseDateTime(string time)
@@ -40,7 +40,7 @@ namespace Nicome.Utils
             {
                 if (!time.Contains('-'))
                 {
-                    throw new ArgumentException(this.ErrorMessage);
+                    throw new ArgumentException(this.ErrorMessageNoSplitChar);
                 }
                 else if (time.Where(c => c == '-').Count() > 1)
                 {
@@ -50,6 +50,37 @@ namespace Nicome.Utils
                 string[] fromto = time.Split('-');
                 this.From = new TimeInfo(fromto[0]);
                 this.To = new TimeInfo(fromto[1]);
+
+                //日付調節
+                if (this.To.IsBack(this.From))
+                {
+                    this.To.Day = 1;
+                }
+
+            }
+            public CommentTimeSpan(string time,int delay)
+            {
+                if (!time.Contains('-'))
+                {
+                    throw new ArgumentException(this.ErrorMessageNoSplitChar);
+                }
+                else if (time.Where(c => c == '-').Count() > 1)
+                {
+                    throw new ArgumentException(this.ErrorMessage);
+                }
+
+                string[] fromto = time.Split('-');
+                this.From = new TimeInfo(fromto[0]);
+                this.To = new TimeInfo(fromto[1]);
+
+                this.From.Day = delay;
+                this.To.Day = delay;
+
+                //日付調節
+                if (this.To.IsBack(this.From))
+                {
+                    this.To.Day++;
+                }
 
             }
 
@@ -62,6 +93,16 @@ namespace Nicome.Utils
             /// エラーメッセージ
             /// </summary>
             private string ErrorMessageNoSplitChar = "不正な時間指定の形式です。(時間は範囲を指定して下さい)";
+
+            /// <summary>
+            /// 投稿日時を設定
+            /// </summary>
+            /// <param name="postdate"></param>
+            public void SetPostDate(DateTime postdate)
+            {
+                this.From.PostDatetime = postdate;
+                this.To.PostDatetime = postdate;
+            }
 
             public TimeInfo From { get; private set; }
 
@@ -86,13 +127,14 @@ namespace Nicome.Utils
                 try
                 {
                     this.Hour = int.Parse(hourminite[0]);
-                    this.Hour = int.Parse(hourminite[1]);
+                    this.Minute = int.Parse(hourminite[1]);
                 }
                 catch (ArgumentException)
                 {
                     throw new Exception(ErrorMessageNotNumber);
                 }
             }
+     
 
             /// <summary>
             /// エラーメッセージ
@@ -113,7 +155,17 @@ namespace Nicome.Utils
             /// 分
             /// </summary>
             public int Minute { get; set; }
+
+            /// <summary>
+            /// 日付のoffset
+            /// </summary>
+            public int Day { get; set; }
         
+            /// <summary>
+            /// 投稿日時
+            /// </summary>
+            public DateTime? PostDatetime { get; set; }
+
             /// <summary>
             /// 指定した日付でDatetime型のインスタンスを返す
             /// </summary>
@@ -121,7 +173,21 @@ namespace Nicome.Utils
             /// <returns></returns>
             public DateTime ToDatetime(DateTime source)
             {
-                return new DateTime(source.Year, source.Month, source.Day, this.Hour, this.Minute,0);
+                return new DateTime(this.PostDatetime==null? source.Year:this.PostDatetime.Value.Year,
+                    this.PostDatetime == null ? source.Month : this.PostDatetime.Value.Month,
+                    this.PostDatetime == null ? source.Day : this.PostDatetime.Value.Day + this.Day,
+                    this.Hour, this.Minute,0);
+            }
+
+            /// <summary>
+            /// インスタンス同士で比較
+            /// </summary>
+            /// <param name="t"></param>
+            /// <returns></returns>
+            public bool IsBack(TimeInfo t)
+            {
+                var dt = DateTime.Now;
+                return this.ToDatetime(dt) < t.ToDatetime(dt);
             }
         }
 

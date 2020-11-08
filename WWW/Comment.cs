@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using System.Linq;
 using System.Xml;
 using System.Text;
+using NicoComment = Nicome.Comment;
 
 namespace Nicome.WWW.Comment
 {
@@ -39,6 +40,12 @@ namespace Nicome.WWW.Comment
                     return NicoEnums.GenelicErrorCode.ERROR;
                 }
 
+                //動画情報
+                video = context.GetVideoInfo();
+
+                //投稿日時を指定
+                storeData.SetPostDate(video.PostedDateTime);
+
                 var comCliet = new CommentClient(context);
                 try
                 {
@@ -49,8 +56,6 @@ namespace Nicome.WWW.Comment
                     logger.Error(e.Message);
                     return NicoEnums.GenelicErrorCode.ERROR;
                 }
-
-                video = context.GetVideoInfo();
             }
 
 
@@ -436,6 +441,7 @@ namespace Nicome.WWW.Comment
         {
             this.RemoveDupe();
             this.SortByNumber();
+            this.RemoveNgComment();
         }
 
         /// <summary>
@@ -471,6 +477,16 @@ namespace Nicome.WWW.Comment
         private void RemoveDupe()
         {
             this.Comments = this.Comments.Distinct().ToList();
+        }
+    
+        /// <summary>
+        /// ngコメントを削除する
+        /// </summary>
+        private void RemoveNgComment()
+        {
+            var ngHandler = new NicoComment::CommentNg();
+
+            this.Comments.RemoveAll(c => c.chat != null && ngHandler.JudgeAll(c));
         }
     }
 

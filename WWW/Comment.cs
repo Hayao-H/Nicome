@@ -147,7 +147,7 @@ namespace Nicome.WWW.Comment
                     _when = firstComment.GetPrevDate();
                     comments.Merge(kacomments);
                     ++i;
-                    if (comments.IsMax()) break;
+                    if (comments.IsMax(i)) break;
                 }
                 while (firstComment.no > 1);
 
@@ -530,10 +530,10 @@ namespace Nicome.WWW.Comment
         /// 最大コメント数に達しているかどうか
         /// </summary>
         /// <returns></returns>
-        public bool IsMax()
+        public bool IsMax(int i)
         {
             var store = new Store.Store().GetData();
-            return store.IsMaxCommentSet() && this.Count > this.GetMaxComments()+2000;
+            return store.IsMaxCommentSet() && this.Count > this.GetMaxComments()+1000*i;
         }
 
         /// <summary>

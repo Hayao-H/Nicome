@@ -149,6 +149,8 @@ namespace Nicome.CLI
             AddOption("ngmail", NicoEnums::Option.NG_MAIL);
             //ユーザーNG
             AddOption("nguser", NicoEnums::Option.NG_UID);
+            //NGワード
+            AddOption("ngword", NicoEnums::Option.NG_UID);
 
             //フィルター追加
             AddOptionFilter((string argment) =>
@@ -246,6 +248,15 @@ namespace Nicome.CLI
                 if (Regex.IsMatch(argment, "^(-nu|--ng-user)$"))
                 {
                     argment = "nguser";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-nw|--ng-word)$"))
+                {
+                    argment = "ngword";
                 }
                 return argment;
             });

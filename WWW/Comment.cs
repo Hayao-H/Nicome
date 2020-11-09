@@ -486,7 +486,6 @@ namespace Nicome.WWW.Comment
         public void Merge(CommentList list)
         {
             this.Add(list.Comments);
-            Console.WriteLine($"list: {this.Comments.Count} count:{ this.Count}");
         }
 
         /// <summary>

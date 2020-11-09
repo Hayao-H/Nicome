@@ -3,11 +3,8 @@ using Nicome.WWW.API.Types.WatchPage;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using Enums = Nicome.Enums;
-using System.Text;
 using System.Data;
-using System.Reflection;
 using System.Diagnostics;
 
 namespace Nicome.Store
@@ -113,6 +110,83 @@ namespace Nicome.Store
                 Store.data.Download.CommentLog = true;
 
             }
+
+            //時間帯NG
+            if (parser.Contains("ngft"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("ngft", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    //時間帯NG
+                    if (parser.Contains("ngftdelay"))
+                    {
+                        CLI.CLICommand? arg2;
+                        parser.TryGetOption("ngftdelay", out arg2);
+                        if (arg2 != null && arg2.Parameter != null)
+                        {
+                            Store.data.Ngs.NgTimes = NicoUtl.DateTimeUtils.ParseDateTime(arg.Parameter, arg2.Parameter);
+                        }
+                    }
+                    else
+                    {
+                        Store.data.Ngs.NgTimes = NicoUtl.DateTimeUtils.ParseDateTime(arg.Parameter);
+                    }
+
+                    if (parser.Contains("ngftvpdt"))
+                    {
+                        Store.data.Ngs.IsStartFromPostDate = true;
+                    }
+                }
+            }
+
+            //コマンドNG
+            if (parser.Contains("ngmail"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("ngmail", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgCommands.AddRange(ngs);
+                }
+            }
+
+            //ユーザーNG
+            if (parser.Contains("nguser"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("nguser", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgUsers.AddRange(ngs);
+                }
+            }
+
+            //NGワード
+            if (parser.Contains("ngword"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("ngword", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgWords.AddRange(ngs);
+                }
+            }
+
+            //最大コメント数
+            if (parser.Contains("maxcom"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("maxcom", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    Store.data.Download.MaxComments=(uint)int.Parse(arg.Parameter);
+                }
+            }
+
         }
 
         /// <summary>
@@ -140,6 +214,14 @@ namespace Nicome.Store
             abstract public string GetNicoBaseAddress();
             abstract public string GetNicoLoginAddress();
             abstract public bool DoDownloadCommentLog();
+            abstract public bool IsStartFromPostDate();
+            abstract public void SetPostDate(DateTime p);
+            abstract public List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime();
+            abstract public List<string> GetNgCommand();
+            abstract public List<string> GetNgUser();
+            abstract public List<string> GetNgWord();
+            abstract public bool IsMaxCommentSet();
+            abstract public uint GetMaxComment();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -243,11 +325,90 @@ namespace Nicome.Store
                 return this.Download.CommentLog;
             }
 
+            /// <summary>
+            /// 時間帯NGデータを返す
+            /// </summary>
+            /// <returns></returns>
+            public override List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime()
+            {
+                return this.Ngs.NgTimes;
+            }
+
+            /// <summary>
+            /// 投稿日起点型NGであるかどうかを返す
+            /// </summary>
+            /// <returns></returns>
+            public override bool IsStartFromPostDate()
+            {
+                return this.Ngs.IsStartFromPostDate;
+            }
+
+            /// <summary>
+            /// 投稿日時を設定
+            /// </summary>
+            /// <param name="posted"></param>
+            public override void SetPostDate(DateTime posted)
+            {
+                if (this.Ngs.IsStartFromPostDate)
+                {
+                    foreach (var ng in this.Ngs.NgTimes)
+                    {
+                        ng.SetPostDate(posted);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// NGコマンドを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgCommand()
+            {
+                return this.Ngs.NgCommands;
+            }
+
+            /// <summary>
+            /// NGユーザーを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgUser()
+            {
+                return this.Ngs.NgUsers;
+            }
+
+            /// <summary>
+            /// NGワードを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgWord()
+            {
+                return this.Ngs.NgWords;
+            }
+
+            /// <summary>
+            /// 最大コメント数が定義されているかどうか
+            /// </summary>
+            /// <returns></returns>
+            public override bool IsMaxCommentSet()
+            {
+                return this.Download.MaxComments != 0;
+            }
+
+            /// <summary>
+            /// 最大コメント数を取得
+            /// </summary>
+            /// <returns></returns>
+            public override uint GetMaxComment()
+            {
+                return this.Download.MaxComments;
+            }
+
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
             public FileConfig Files { get; set; } = new FileConfig();
             public DownloadInfo Download { get; set; } = new DownloadInfo();
+            public NgInfo Ngs { get; set; } = new NgInfo();
 
         }
 
@@ -255,6 +416,7 @@ namespace Nicome.Store
         {
             public string ID { get; set; } = "sm9";
             public bool CommentLog { get; set; } = false;
+            public uint MaxComments { get; set; }
         }
 
         class UserInfo
@@ -281,6 +443,15 @@ namespace Nicome.Store
             public string BaseDirectory { get; set; } = Directory.GetParent(Process.GetCurrentProcess().MainModule.FileName).FullName;
             public string FolderName { get; set; } = "保存したコメント";
             public string Format { get; set; } = "[<id>]<title>";
+        }
+
+        class NgInfo
+        {
+            public List<NicoUtl.CommentTime.CommentTimeSpan> NgTimes { get; set; } = new List<NicoUtl.CommentTime.CommentTimeSpan>();
+            public bool IsStartFromPostDate = false;
+            public List<string> NgCommands { get; set; } = new List<string>();
+            public List<string> NgUsers { get; set; } = new List<string>();
+            public List<string> NgWords { get; set; } = new List<string>();
         }
     }
 }

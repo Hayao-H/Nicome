@@ -141,6 +141,17 @@ namespace Nicome.CLI
             AddOption("user", NicoEnums::Option.USER);
             AddOption("pass", NicoEnums::Option.PASS);
             AddOption("comlog", NicoEnums::Option.COM_LOG);
+            AddOption("maxcom", NicoEnums::Option.MAX_COM);
+            //時間制NG
+            AddOption("ngft", NicoEnums::Option.NG_BY_TIME);
+            AddOption("ngftvpdt", NicoEnums::Option.NG_FROM_POST_DATETIME);
+            AddOption("ngftdelay", NicoEnums::Option.NG_DELAY);
+            //コマンドNG
+            AddOption("ngmail", NicoEnums::Option.NG_MAIL);
+            //ユーザーNG
+            AddOption("nguser", NicoEnums::Option.NG_UID);
+            //NGワード
+            AddOption("ngword", NicoEnums::Option.NG_UID);
 
             //フィルター追加
             AddOptionFilter((string argment) =>
@@ -193,6 +204,69 @@ namespace Nicome.CLI
                 if (Regex.IsMatch(argment, "^(-k|--kako)$"))
                 {
                     argment = "comlog";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(--ng-time-from-to)$"))
+                {
+                    argment = "ngft";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(--ng-time-from-to-postdate)$"))
+                {
+                    argment = "ngftvpdt";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(--ng-time-from-to-delay)$"))
+                {
+                    argment = "ngftdelay";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-nc|--ng-command)$"))
+                {
+                    argment = "ngmail";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-nu|--ng-user)$"))
+                {
+                    argment = "nguser";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-nw|--ng-word)$"))
+                {
+                    argment = "ngword";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-m|--max-comment)$"))
+                {
+                    argment = "maxcom";
                 }
                 return argment;
             });

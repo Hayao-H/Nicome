@@ -10,6 +10,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NicomeTest", "..\NicomeTest\NicomeTest.csproj", "{EC45E2FE-D577-45C8-B8D0-A6B6EE8AC30F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{924845B1-068E-4C1C-AE8A-6A9D5C8DDB6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{924845B1-068E-4C1C-AE8A-6A9D5C8DDB6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{924845B1-068E-4C1C-AE8A-6A9D5C8DDB6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC45E2FE-D577-45C8-B8D0-A6B6EE8AC30F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC45E2FE-D577-45C8-B8D0-A6B6EE8AC30F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC45E2FE-D577-45C8-B8D0-A6B6EE8AC30F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC45E2FE-D577-45C8-B8D0-A6B6EE8AC30F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

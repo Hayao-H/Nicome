@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 using System.Linq;
 using System.Xml;
 using System.Text;
+using NicoComment = Nicome.Comment;
 
 namespace Nicome.WWW.Comment
 {
@@ -39,6 +40,12 @@ namespace Nicome.WWW.Comment
                     return NicoEnums.GenelicErrorCode.ERROR;
                 }
 
+                //動画情報
+                video = context.GetVideoInfo();
+
+                //投稿日時を指定
+                storeData.SetPostDate(video.PostedDateTime);
+
                 var comCliet = new CommentClient(context);
                 try
                 {
@@ -49,8 +56,6 @@ namespace Nicome.WWW.Comment
                     logger.Error(e.Message);
                     return NicoEnums.GenelicErrorCode.ERROR;
                 }
-
-                video = context.GetVideoInfo();
             }
 
 
@@ -67,7 +72,6 @@ namespace Nicome.WWW.Comment
             return NicoEnums.GenelicErrorCode.OK;
         }
     }
-
 
     class CommentRequestInfo
     {
@@ -117,7 +121,7 @@ namespace Nicome.WWW.Comment
             logger.Log("現行コメントをダウンロード中...");
             var comments = new CommentList();
             comments.Add(await GetCommentData(data));
-            ComApi::CommentBody.Json.Chat firstComment=comments.GetFirstComment();
+            ComApi::CommentBody.Json.Chat firstComment = comments.GetFirstComment();
 
 
 
@@ -143,6 +147,7 @@ namespace Nicome.WWW.Comment
                     _when = firstComment.GetPrevDate();
                     comments.Merge(kacomments);
                     ++i;
+                    if (comments.IsMax()) break;
                 }
                 while (firstComment.no > 1);
 
@@ -417,8 +422,19 @@ namespace Nicome.WWW.Comment
 
     class CommentList
     {
+        private string moduleName = "WWW.Comment.CommentList";
         public List<ComApi.CommentBody.Json.JsonComment> Comments { get; private set; } = new List<ComApi.CommentBody.Json.JsonComment>();
 
+        /// <summary>
+        /// コメント数を取得する
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                return this.GetCommentCount();
+            }
+        }
 
         /// <summary>
         /// コメントを追加する
@@ -430,12 +446,37 @@ namespace Nicome.WWW.Comment
         }
 
         /// <summary>
+        /// コメント数を取得する
+        /// </summary>
+        /// <returns></returns>
+        private int GetCommentCount()
+        {
+            return this.Comments.Where(c => c.chat != null).Count();
+        }
+
+        /// <summary>
         /// コメントリストを整形する
         /// </summary>
         public void FormatComments()
         {
+            var logger = NicoLogger.GetLogger();
+            logger.Debug("重複削除処理を開始", moduleName);
             this.RemoveDupe();
+            logger.Debug("重複削除処理が完了", moduleName);
+
+            logger.Debug("ソート処理を開始", moduleName);
             this.SortByNumber();
+            logger.Debug("ソート処理が完了", moduleName);
+
+            logger.Debug("NG処理を開始", moduleName);
+            this.RemoveNgComment();
+            logger.Debug("NG処理が完了", moduleName);
+            if (this.Count > (int)this.GetMaxComments())
+            {
+                logger.Debug("コメ数調節処理を開始", moduleName);
+                this.RemoveOld(this.Count - (int)this.GetMaxComments());
+                logger.Debug("コメ数調節処理を開始", moduleName);
+            }
         }
 
         /// <summary>
@@ -471,6 +512,47 @@ namespace Nicome.WWW.Comment
         private void RemoveDupe()
         {
             this.Comments = this.Comments.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// ngコメントを削除する
+        /// </summary>
+        private void RemoveNgComment()
+        {
+            var ngHandler = new NicoComment::CommentNg();
+            var logger = NicoLogger.GetLogger();
+
+            int removed = this.Comments.RemoveAll(c => c.chat != null && ngHandler.JudgeAll(c));
+            logger.Log($"{removed}件のコメントをNG処理(削除)しました。");
+        }
+
+        /// <summary>
+        /// 最大コメント数に達しているかどうか
+        /// </summary>
+        /// <returns></returns>
+        public bool IsMax()
+        {
+            var store = new Store.Store().GetData();
+            return store.IsMaxCommentSet() && this.Count > this.GetMaxComments()+2000;
+        }
+
+        /// <summary>
+        /// 後ろから削除
+        /// </summary>
+        /// <param name="count"></param>
+        private void RemoveOld(int count)
+        {
+            this.Comments.RemoveRange(this.Comments.Count - count, count);
+        }
+
+        /// <summary>
+        /// 最大コメント数を取得
+        /// </summary>
+        /// <returns></returns>
+        private uint GetMaxComments()
+        {
+            var store = new Store.Store().GetData();
+            return store.IsMaxCommentSet() ? store.GetMaxComment() : 0;
         }
     }
 

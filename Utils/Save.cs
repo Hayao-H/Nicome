@@ -31,9 +31,9 @@ namespace Nicome.IO
         {
             var store = new Store.Store().GetData();
             string format = store.GetVideoFileFormat();
-            return format.Replace("<id>", video.id)
-                .Replace("<title>", video.title)
-                .Replace("<user>", video.user)
+            return format.Replace("<id>", video.Id)
+                .Replace("<title>", video.Title)
+                .Replace("<user>", video.User)
                 + ".xml";
         }
 

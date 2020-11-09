@@ -141,6 +141,7 @@ namespace Nicome.CLI
             AddOption("user", NicoEnums::Option.USER);
             AddOption("pass", NicoEnums::Option.PASS);
             AddOption("comlog", NicoEnums::Option.COM_LOG);
+            AddOption("maxcom", NicoEnums::Option.MAX_COM);
             //時間制NG
             AddOption("ngft", NicoEnums::Option.NG_BY_TIME);
             AddOption("ngftvpdt", NicoEnums::Option.NG_FROM_POST_DATETIME);
@@ -257,6 +258,15 @@ namespace Nicome.CLI
                 if (Regex.IsMatch(argment, "^(-nw|--ng-word)$"))
                 {
                     argment = "ngword";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-m|--max-comment)$"))
+                {
+                    argment = "maxcom";
                 }
                 return argment;
             });

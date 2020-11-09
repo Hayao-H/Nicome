@@ -176,6 +176,17 @@ namespace Nicome.Store
                 }
             }
 
+            //最大コメント数
+            if (parser.Contains("maxcom"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("maxcom", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    Store.data.Download.MaxComments=(uint)int.Parse(arg.Parameter);
+                }
+            }
+
         }
 
         /// <summary>
@@ -209,6 +220,8 @@ namespace Nicome.Store
             abstract public List<string> GetNgCommand();
             abstract public List<string> GetNgUser();
             abstract public List<string> GetNgWord();
+            abstract public bool IsMaxCommentSet();
+            abstract public uint GetMaxComment();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -372,6 +385,24 @@ namespace Nicome.Store
                 return this.Ngs.NgWords;
             }
 
+            /// <summary>
+            /// 最大コメント数が定義されているかどうか
+            /// </summary>
+            /// <returns></returns>
+            public override bool IsMaxCommentSet()
+            {
+                return this.Download.MaxComments != 0;
+            }
+
+            /// <summary>
+            /// 最大コメント数を取得
+            /// </summary>
+            /// <returns></returns>
+            public override uint GetMaxComment()
+            {
+                return this.Download.MaxComments;
+            }
+
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
@@ -385,6 +416,7 @@ namespace Nicome.Store
         {
             public string ID { get; set; } = "sm9";
             public bool CommentLog { get; set; } = false;
+            public uint MaxComments { get; set; }
         }
 
         class UserInfo

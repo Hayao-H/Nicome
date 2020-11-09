@@ -20,7 +20,12 @@ namespace Nicome.Enums
         FOLDER,
         USER,
         PASS,
-        COM_LOG
+        COM_LOG,
+        NG_BY_TIME,
+        NG_FROM_POST_DATETIME,
+        NG_DELAY,
+        NG_MAIL,
+        NG_UID
     }
 
     enum LOGLEVEL

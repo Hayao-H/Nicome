@@ -140,6 +140,42 @@ namespace Nicome.Store
                 }
             }
 
+            //コマンドNG
+            if (parser.Contains("ngmail"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("ngmail", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgCommands.AddRange(ngs);
+                }
+            }
+
+            //ユーザーNG
+            if (parser.Contains("nguser"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("nguser", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgUsers.AddRange(ngs);
+                }
+            }
+
+            //NGワード
+            if (parser.Contains("ngword"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("ngword", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    string[] ngs = arg.Parameter.Split(',');
+                    Store.data.Ngs.NgWords.AddRange(ngs);
+                }
+            }
+
         }
 
         /// <summary>
@@ -170,6 +206,9 @@ namespace Nicome.Store
             abstract public bool IsStartFromPostDate();
             abstract public void SetPostDate(DateTime p);
             abstract public List<NicoUtl.CommentTime.CommentTimeSpan> GetNgTime();
+            abstract public List<string> GetNgCommand();
+            abstract public List<string> GetNgUser();
+            abstract public List<string> GetNgWord();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -306,6 +345,33 @@ namespace Nicome.Store
                 }
             }
 
+            /// <summary>
+            /// NGコマンドを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgCommand()
+            {
+                return this.Ngs.NgCommands;
+            }
+
+            /// <summary>
+            /// NGユーザーを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgUser()
+            {
+                return this.Ngs.NgUsers;
+            }
+
+            /// <summary>
+            /// NGワードを取得
+            /// </summary>
+            /// <returns></returns>
+            public override List<string> GetNgWord()
+            {
+                return this.Ngs.NgWords;
+            }
+
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
@@ -351,6 +417,9 @@ namespace Nicome.Store
         {
             public List<NicoUtl.CommentTime.CommentTimeSpan> NgTimes { get; set; } = new List<NicoUtl.CommentTime.CommentTimeSpan>();
             public bool IsStartFromPostDate = false;
+            public List<string> NgCommands { get; set; } = new List<string>();
+            public List<string> NgUsers { get; set; } = new List<string>();
+            public List<string> NgWords { get; set; } = new List<string>();
         }
     }
 }

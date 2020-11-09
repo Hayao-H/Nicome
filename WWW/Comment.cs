@@ -73,7 +73,6 @@ namespace Nicome.WWW.Comment
         }
     }
 
-
     class CommentRequestInfo
     {
         public string? Threadkey { get; set; }
@@ -422,6 +421,7 @@ namespace Nicome.WWW.Comment
 
     class CommentList
     {
+        private string moduleName = "WWW.Comment.CommentList";
         public List<ComApi.CommentBody.Json.JsonComment> Comments { get; private set; } = new List<ComApi.CommentBody.Json.JsonComment>();
 
 
@@ -439,9 +439,18 @@ namespace Nicome.WWW.Comment
         /// </summary>
         public void FormatComments()
         {
+            var logger = NicoLogger.GetLogger();
+            logger.Debug("重複削除処理を開始", moduleName);
             this.RemoveDupe();
+            logger.Debug("重複削除処理が完了", moduleName);
+
+            logger.Debug("ソート処理を開始", moduleName);
             this.SortByNumber();
+            logger.Debug("ソート処理が完了", moduleName);
+
+            logger.Debug("NG処理を開始", moduleName);
             this.RemoveNgComment();
+            logger.Debug("NG処理が完了", moduleName);
         }
 
         /// <summary>
@@ -485,8 +494,10 @@ namespace Nicome.WWW.Comment
         private void RemoveNgComment()
         {
             var ngHandler = new NicoComment::CommentNg();
+            var logger = NicoLogger.GetLogger();
 
-            this.Comments.RemoveAll(c => c.chat != null && ngHandler.JudgeAll(c));
+            int removed=this.Comments.RemoveAll(c => c.chat != null && ngHandler.JudgeAll(c));
+            logger.Log($"{removed}件のコメントをNG処理(削除)しました。");
         }
     }
 

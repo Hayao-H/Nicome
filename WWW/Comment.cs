@@ -12,6 +12,7 @@ using System.Linq;
 using System.Xml;
 using System.Text;
 using NicoComment = Nicome.Comment;
+using System.Text.RegularExpressions;
 
 namespace Nicome.WWW.Comment
 {
@@ -21,6 +22,28 @@ namespace Nicome.WWW.Comment
         {
             var logger = NicoLogger.GetLogger();
             var storeData = new Store.Store().GetData();
+
+            bool fileExists = Utils.IO.Exists(storeData.GetNicoID());
+            if (!storeData.DoOverWrite()&&fileExists)
+            {
+                while (true)
+                {
+                    logger.Warn($"id:{storeData.GetNicoID()}は既に保存済です。上書きしますか？(Y/N)");
+                    string continueOrNot = Console.ReadLine();
+                    if (Regex.IsMatch(continueOrNot, "[yY]"))
+                    {
+                        break;
+                    } else if (Regex.IsMatch(continueOrNot, "[nN]"))
+                    {
+                        logger.Log("処理をスキップします。");
+                        return NicoEnums::GenelicErrorCode.OK;
+                    } else
+                    {
+                        logger.Error("YまたはNで答えて下さい。");
+                        continue;
+                    }
+                }
+            }
 
             VideoInfo video;
             List<ComApi.CommentBody.Json.JsonComment> comment;

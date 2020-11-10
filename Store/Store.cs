@@ -187,6 +187,12 @@ namespace Nicome.Store
                 }
             }
 
+            //上書き保存
+            if (parser.Contains("overwrite"))
+            {
+                Store.data.Files.Overwrite = true;
+            }
+
         }
 
         /// <summary>
@@ -222,6 +228,7 @@ namespace Nicome.Store
             abstract public List<string> GetNgWord();
             abstract public bool IsMaxCommentSet();
             abstract public uint GetMaxComment();
+            abstract public bool DoOverWrite();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -403,6 +410,15 @@ namespace Nicome.Store
                 return this.Download.MaxComments;
             }
 
+            /// <summary>
+            /// 上書きするかどうか
+            /// </summary>
+            /// <returns></returns>
+            public override bool DoOverWrite()
+            {
+                return this.Files.Overwrite;
+            }
+
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
@@ -443,6 +459,7 @@ namespace Nicome.Store
             public string BaseDirectory { get; set; } = Directory.GetParent(Process.GetCurrentProcess().MainModule.FileName).FullName;
             public string FolderName { get; set; } = "保存したコメント";
             public string Format { get; set; } = "[<id>]<title>";
+            public bool Overwrite { get; set; } = false;
         }
 
         class NgInfo

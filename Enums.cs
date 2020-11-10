@@ -26,7 +26,8 @@ namespace Nicome.Enums
         NG_DELAY,
         NG_MAIL,
         NG_UID,
-        MAX_COM
+        MAX_COM,
+        OVERWRITE
     }
 
     enum LOGLEVEL

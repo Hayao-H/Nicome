@@ -33,14 +33,14 @@ namespace Nicome.Store
             Store.data = new Types.StoreRoot();
 
             //ID
-            if (parser.Contains("nicoid"))
+            if (!parser.Contains("channel"))
             {
                 CLI.CLICommand? id;
                 parser.TryGetOption("nicoid", out id);
                 if (id == null || id.Parameter == null) throw new NoNullAllowedException("動画IDが指定されていません。");
                 Store.data.Download.ID = id.Parameter;
             }
-            else
+            else if (!parser.Contains("channel"))
             {
                 throw new NoNullAllowedException("動画IDが指定されていません。");
             }
@@ -192,12 +192,20 @@ namespace Nicome.Store
             {
                 Store.data.Files.Overwrite = true;
             }
+            else if (parser.Contains("dontoverwrite"))
+            {
+                Store.data.Files.SkipOverwriteWithoutConfirm = true;
+            }
 
             //チャンネル
             if (parser.Contains("channel"))
             {
                 CLI.CLICommand? arg;
                 parser.TryGetOption("channel", out arg);
+                if (parser.Contains("nicoid"))
+                {
+                    throw new ArgumentException("動画IDとチャンネルを同時に指定することは出来ません。");
+                }
                 if (arg != null && arg.Parameter != null)
                 {
                     Store.data.Download.ChannnelName = arg.Parameter;
@@ -240,6 +248,7 @@ namespace Nicome.Store
             abstract public bool IsMaxCommentSet();
             abstract public uint GetMaxComment();
             abstract public bool DoOverWrite();
+            abstract public bool DoSkipOverWrite();
             abstract public bool DoDownloadChannel();
             abstract public string GetChannnelName();
             abstract public Enums::LOGLEVEL GetLogLevel();
@@ -433,6 +442,15 @@ namespace Nicome.Store
             }
 
             /// <summary>
+            /// 確認なしで上書きをスキップ吸うかどうか
+            /// </summary>
+            /// <returns></returns>
+            public override bool DoSkipOverWrite()
+            {
+                return this.Files.SkipOverwriteWithoutConfirm;
+            }
+
+            /// <summary>
             /// チャンネルが指定されているかどうか
             /// </summary>
             /// <returns></returns>
@@ -492,6 +510,7 @@ namespace Nicome.Store
             public string FolderName { get; set; } = "保存したコメント";
             public string Format { get; set; } = "[<id>]<title>";
             public bool Overwrite { get; set; } = false;
+            public bool SkipOverwriteWithoutConfirm { get; set; } = false;
         }
 
         class NgInfo

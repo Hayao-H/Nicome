@@ -22,27 +22,35 @@ namespace Nicome.WWW.Comment
         {
             var logger = NicoLogger.GetLogger();
             var storeData = new Store.Store().GetData();
-
-            bool fileExists = Utils.IO.Exists(storeData.GetNicoID());
-            if (!storeData.DoOverWrite()&&fileExists)
+            bool fileExists = Utils.IO.Exists(id);
+            if (fileExists)
             {
-                while (true)
+                if (storeData.DoSkipOverWrite())
                 {
-                    logger.Warn($"id:{storeData.GetNicoID()}は既に保存済です。上書きしますか？(Y/N)");
-                    string continueOrNot = Console.ReadLine();
-                    if (Regex.IsMatch(continueOrNot, "[yY]"))
+                    logger.Warn($"id:{id}は既に保存のため、スキップします");
+                    return NicoEnums.GenelicErrorCode.SKIP;
+                }else if (!storeData.DoOverWrite())
+                {
+                    while (true)
                     {
-                        break;
-                    } else if (Regex.IsMatch(continueOrNot, "[nN]"))
-                    {
-                        logger.Log("処理をスキップします。");
-                        return NicoEnums::GenelicErrorCode.OK;
-                    } else
-                    {
-                        logger.Error("YまたはNで答えて下さい。");
-                        continue;
+                        logger.Warn($"id:{id}は既に保存済です。上書きしますか？(Y/N)");
+                        string continueOrNot = Console.ReadLine();
+                        if (Regex.IsMatch(continueOrNot, "[yY]"))
+                        {
+                            break;
+                        }
+                        else if (Regex.IsMatch(continueOrNot, "[nN]"))
+                        {
+                            logger.Log("処理をスキップします。");
+                            return NicoEnums::GenelicErrorCode.OK;
+                        }
+                        else
+                        {
+                            logger.Error("YまたはNで答えて下さい。");
+                            continue;
+                        }
                     }
-                }
+                } 
             }
 
             VideoInfo video;

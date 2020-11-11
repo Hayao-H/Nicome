@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Linq;
 using System.Data;
-using Nicome.WWW.API.Types.Comment.CommentBody.Json;
 using System.Threading.Tasks;
 
 namespace Nicome
@@ -85,6 +84,7 @@ namespace Nicome
                 return 100;
             }
             var storeData = store.GetData();
+
             List<string> IdList;
             try
             {
@@ -115,7 +115,7 @@ namespace Nicome
                         return 101;
                 }
 
-                if (IdList.Count > 1)
+                if (IdList.Count > 1&&errorlevel==NicoEnums::GenelicErrorCode.OK)
                 {
                     logger.Log("待機中です...(5,000ms)");
                     Task.Delay(5000).Wait();

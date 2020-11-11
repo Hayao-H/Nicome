@@ -9,6 +9,7 @@ namespace Nicome.Enums
         ERROR,
         SAFE,
         CONTINUE,
+        SKIP,
         EXIT,
         OK
     }
@@ -28,6 +29,7 @@ namespace Nicome.Enums
         NG_UID,
         MAX_COM,
         OVERWRITE,
+        DONT_OVERWRITE,
         CHANNEL
     }
 

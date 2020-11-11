@@ -16,6 +16,9 @@ nicome <オプションキー> <値> <オプションキー> <値>...
 -k | --kako | 過去ログ取得フラグ。値は不要。| (取得しない)
 -l | --loglevel | quiet/error/warn/log/info/debug | log
 -m | --max-comment | 最大コメント数(数値) | (無限)
+-c | --channel | チャンネル名 | -
+-y | --allow-overwrite | 確認せず上書き | (確認する)
+-n | --disallow-overwrite | 確認せずスキップ | (確認する)
 ## NG関連のオプション(β版)
 ※開発中の為、動作が不安定である可能性があります。
 - 時間制NG

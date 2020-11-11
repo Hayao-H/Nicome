@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>0.0.3.*</AssemblyVersion>
+    <AssemblyVersion>0.0.4.*</AssemblyVersion>
     <Deterministic>false</Deterministic>
     <Version>0.0.0</Version>
     <Authors>住人</Authors>

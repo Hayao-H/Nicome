@@ -498,7 +498,7 @@ namespace Nicome.WWW.Comment
             {
                 logger.Debug("コメ数調節処理を開始", moduleName);
                 this.RemoveOld(this.Count - (int)this.GetMaxComments());
-                logger.Debug("コメ数調節処理を開始", moduleName);
+                logger.Debug("コメ数調節処理が完了", moduleName);
             }
         }
 

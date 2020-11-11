@@ -18,7 +18,11 @@ namespace Nicome.Utils
         public static bool Exists(string id)
         {
             var data = new Store.Store().GetData();
-           return  Directory.GetFiles(data.GetVideoFilePath(), $"[{id}]*").Length > 0;
+            string dirPath = data.GetVideoFilePath();
+
+            if (!Directory.Exists(dirPath)) return false;
+
+           return  Directory.GetFiles(dirPath, $"[{id}]*").Length > 0;
         }
 
         /// <summary>
@@ -50,7 +54,7 @@ namespace Nicome.Utils
         /// <param name="path"></param>
         public void Write(string content,string path)
         {
-            using (var fs = new StreamWriter(path))
+            using (var fs = new StreamWriter($"{path}"))
             {
                 fs.Write(content);
             }

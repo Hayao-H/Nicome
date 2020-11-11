@@ -193,6 +193,17 @@ namespace Nicome.Store
                 Store.data.Files.Overwrite = true;
             }
 
+            //チャンネル
+            if (parser.Contains("channel"))
+            {
+                CLI.CLICommand? arg;
+                parser.TryGetOption("channel", out arg);
+                if (arg != null && arg.Parameter != null)
+                {
+                    Store.data.Download.ChannnelName = arg.Parameter;
+                }
+            }
+
         }
 
         /// <summary>
@@ -229,6 +240,8 @@ namespace Nicome.Store
             abstract public bool IsMaxCommentSet();
             abstract public uint GetMaxComment();
             abstract public bool DoOverWrite();
+            abstract public bool DoDownloadChannel();
+            abstract public string GetChannnelName();
             abstract public Enums::LOGLEVEL GetLogLevel();
         }
         class StoreRoot : StoreRootBase
@@ -419,6 +432,24 @@ namespace Nicome.Store
                 return this.Files.Overwrite;
             }
 
+            /// <summary>
+            /// チャンネルが指定されているかどうか
+            /// </summary>
+            /// <returns></returns>
+            public override bool DoDownloadChannel()
+            {
+                return this.Download.ChannnelName != null;
+            }
+
+            /// <summary>
+            /// チャンネル名を取得
+            /// </summary>
+            /// <returns></returns>
+            public override string GetChannnelName()
+            {
+                return this.Download.ChannnelName;
+            }
+
             public UserInfo User { get; set; } = new UserInfo();
             public NicoInfo Niconico { get; set; } = new NicoInfo();
             public LogConfig Log { get; set; } = new LogConfig();
@@ -431,6 +462,7 @@ namespace Nicome.Store
         class DownloadInfo
         {
             public string ID { get; set; } = "sm9";
+            public string? ChannnelName { get; set; }
             public bool CommentLog { get; set; } = false;
             public uint MaxComments { get; set; }
         }

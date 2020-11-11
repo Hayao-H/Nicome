@@ -22,6 +22,10 @@ namespace Nicome.WWW
     {
 
         private string moduleName = "WWW.NicoHttp";
+        /// <summary>
+        /// ログイン状態
+        /// </summary>
+        public static bool IsLogin { get; set; }
 
         /// <summary>
         /// httpクライアント
@@ -77,6 +81,9 @@ namespace Nicome.WWW
         /// <returns></returns>
         public async Task LoginAsync(string username, string password)
         {
+            //二重ログイン回避
+            if (NicoHttp.IsLogin) return;
+
             var store = new Store::Store().GetData();
             var loginData = new Dictionary<string, string>() {
                 {"mail",username },
@@ -91,6 +98,7 @@ namespace Nicome.WWW
             if (res.IsSuccessStatusCode&&!res.Headers.Contains("Set-Cookie"))
             {
                 logger.Log("ログインに成功しました。");
+                NicoHttp.IsLogin = true;
             }
             else
             {

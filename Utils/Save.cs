@@ -31,10 +31,12 @@ namespace Nicome.IO
         {
             var store = new Store.Store().GetData();
             string format = store.GetVideoFileFormat();
-            return format.Replace("<id>", video.Id)
+            return this.RemoveInvalidChar(
+                format.Replace("<id>", video.Id)
                 .Replace("<title>", video.Title)
                 .Replace("<user>", video.User)
-                + ".xml";
+                + ".xml"
+                );
         }
 
         /// <summary>
@@ -115,8 +117,28 @@ namespace Nicome.IO
                 }
 
                 logger.Log("保存先のフォルダーが存在しなかった為、新規作成しました。");
-                logger.Debug($"パス: {FolderPath}",moduleName);
+                logger.Debug($"パス: {FolderPath}", moduleName);
             }
         }
+
+        /// <summary>
+        /// 禁則文字を削除する
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        private string RemoveInvalidChar(string origin)
+        {
+            return origin
+                .Replace("\\", "")
+                .Replace("/", "")
+                .Replace(":", "")
+                .Replace("*", "")
+                .Replace("?", "")
+                .Replace("\"", "")
+                .Replace("<", "")
+                .Replace(">", "")
+                .Replace("|", "");
+        }
+
     }
 }

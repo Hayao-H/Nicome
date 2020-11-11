@@ -18,7 +18,7 @@ namespace Nicome.WWW.Comment
 {
     class Comment
     {
-        public async Task<NicoEnums::GenelicErrorCode> DownloadComment()
+        public async Task<NicoEnums::GenelicErrorCode> DownloadComment(string id)
         {
             var logger = NicoLogger.GetLogger();
             var storeData = new Store.Store().GetData();
@@ -50,7 +50,7 @@ namespace Nicome.WWW.Comment
 
             using (var context = new NicoContext())
             {
-                if (!await context.GetContent(storeData.GetNicoID(), "コメントのダウンロード"))
+                if (!await context.GetContent(id, "コメントのダウンロード"))
                 {
                     logger.Error("セッションの確立に失敗しました。");
                     return NicoEnums::GenelicErrorCode.ERROR;

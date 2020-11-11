@@ -65,10 +65,11 @@ namespace Nicome
                     break;
             }
 
+            Store.Store store;
             //ストア初期化
             try
             {
-                var store = new Store::Store(parser);
+                store = new Store::Store(parser);
             }
             catch (NoNullAllowedException e)
             {
@@ -79,11 +80,13 @@ namespace Nicome
             {
                 logger.Error($"データの初期化中にエラーが発生しました。{e.Message}");
                 logger.Error(e.StackTrace==null?"no stack_trace":e.StackTrace);
+                return 100;
             }
+            var storeData = store.GetData();
 
             //実行
             var downloader = new WWW.Comment.Comment();
-            errorlevel=downloader.DownloadComment().Result;
+            errorlevel=downloader.DownloadComment(storeData.GetNicoID()).Result;
 
             switch (errorlevel)
             {

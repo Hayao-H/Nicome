@@ -198,6 +198,8 @@ namespace Nicome
                                                 + "  -p | --password => <<必須>>niconicoアカウントのパスワード。\n"
                                                 + "  -f | --folder => 保存フォルダー名。実行ファイルからの相対パス\n"
                                                 + "  -k | --kako => 過去ログ取得オプション。値は不要。\n"
-                                                + "  -l | --loglevel => quiet/error/warn/log(デフォルト)/info/debug";
+                                                + "  -l | --loglevel => quiet/error/warn/log(デフォルト)/info/debug\n"
+                                                + "  -m | --max-comment => 最大コメント数(数値)\n"
+                                                + "  -c | --channel => チャンネル";
     }
 }

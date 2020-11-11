@@ -9,6 +9,7 @@ namespace Nicome.Enums
         ERROR,
         SAFE,
         CONTINUE,
+        SKIP,
         EXIT,
         OK
     }
@@ -26,7 +27,10 @@ namespace Nicome.Enums
         NG_DELAY,
         NG_MAIL,
         NG_UID,
-        MAX_COM
+        MAX_COM,
+        OVERWRITE,
+        DONT_OVERWRITE,
+        CHANNEL
     }
 
     enum LOGLEVEL

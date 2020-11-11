@@ -67,18 +67,17 @@ namespace Nicome.IO
         /// </summary>
         public bool TryWriteComment(List<JsonComment> comments)
         {
-            CreateFolderIfNotExist();
+            var io = new Utils.IO();
             string commentString = ConvertToString(comments);
             var logger = NicoLogger.GetLogger();
 
+            io.CreateFolderIfNotExist(FolderPath);
+
             try
             {
-                using (var fs = new StreamWriter(FilePath))
-                {
-                    logger.Debug("コメントファイルへの書き込みを開始", moduleName);
-                    fs.Write(commentString);
-                    logger.Debug("コメントファイルへの書き込みが完了", moduleName);
-                }
+                logger.Debug("コメントファイルへの書き込みを開始", moduleName);
+                io.Write(commentString, FilePath);
+                logger.Debug("コメントファイルへの書き込みが完了", moduleName);
             }
             catch (Exception e)
             {

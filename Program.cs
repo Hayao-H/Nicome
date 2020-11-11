@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Linq;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace Nicome
 {
@@ -65,10 +66,11 @@ namespace Nicome
                     break;
             }
 
+            Store.Store store;
             //ストア初期化
             try
             {
-                var store = new Store::Store(parser);
+                store = new Store::Store(parser);
             }
             catch (NoNullAllowedException e)
             {
@@ -79,21 +81,49 @@ namespace Nicome
             {
                 logger.Error($"データの初期化中にエラーが発生しました。{e.Message}");
                 logger.Error(e.StackTrace==null?"no stack_trace":e.StackTrace);
+                return 100;
             }
+            var storeData = store.GetData();
 
-            //実行
-            var downloader = new WWW.Comment.Comment();
-            errorlevel=downloader.DownloadComment().Result;
-
-            switch (errorlevel)
+            List<string> IdList;
+            try
             {
-                case NicoEnums::GenelicErrorCode.ERROR:
-                    logger.Log("処理を終了します。");
-                    return 101;
-                default:
-                    logger.Log("処理を終了します。");
-                    return 0;
+                IdList = CLI.IDHandler.GetIDLists().Result;
             }
+            catch(Exception e)
+            {
+                logger.Error($"ダウンロードIDの解析中にエラーが発生しました。(詳細: {e.Message})");
+                return 102;
+            }
+
+            if (IdList.Count > 1)
+            {
+                logger.Log($"id:{IdList[0]}ほか、{IdList.Count}件の動画をダウンロードします");
+            }
+
+            foreach (var id in IdList)
+            {
+
+                //実行
+                var downloader = new WWW.Comment.Comment();
+                errorlevel = downloader.DownloadComment(id).Result;
+
+                switch (errorlevel)
+                {
+                    case NicoEnums::GenelicErrorCode.ERROR:
+                        logger.Log("処理を終了します。");
+                        return 101;
+                }
+
+                if (IdList.Count > 1&&errorlevel==NicoEnums::GenelicErrorCode.OK)
+                {
+                    logger.Log("待機中です...(5,000ms)");
+                    Task.Delay(5000).Wait();
+                }
+            }
+
+            logger.Log("処理を終了します)");
+            return 0;
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

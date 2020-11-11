@@ -12,22 +12,53 @@ using System.Linq;
 using System.Xml;
 using System.Text;
 using NicoComment = Nicome.Comment;
+using System.Text.RegularExpressions;
 
 namespace Nicome.WWW.Comment
 {
     class Comment
     {
-        public async Task<NicoEnums::GenelicErrorCode> DownloadComment()
+        public async Task<NicoEnums::GenelicErrorCode> DownloadComment(string id)
         {
             var logger = NicoLogger.GetLogger();
             var storeData = new Store.Store().GetData();
+            bool fileExists = Utils.IO.Exists(id);
+            if (fileExists)
+            {
+                if (storeData.DoSkipOverWrite())
+                {
+                    logger.Warn($"id:{id}は既に保存のため、スキップします");
+                    return NicoEnums.GenelicErrorCode.SKIP;
+                }else if (!storeData.DoOverWrite())
+                {
+                    while (true)
+                    {
+                        logger.Warn($"id:{id}は既に保存済です。上書きしますか？(Y/N)");
+                        string continueOrNot = Console.ReadLine();
+                        if (Regex.IsMatch(continueOrNot, "[yY]"))
+                        {
+                            break;
+                        }
+                        else if (Regex.IsMatch(continueOrNot, "[nN]"))
+                        {
+                            logger.Log("処理をスキップします。");
+                            return NicoEnums::GenelicErrorCode.OK;
+                        }
+                        else
+                        {
+                            logger.Error("YまたはNで答えて下さい。");
+                            continue;
+                        }
+                    }
+                } 
+            }
 
             VideoInfo video;
             List<ComApi.CommentBody.Json.JsonComment> comment;
 
             using (var context = new NicoContext())
             {
-                if (!await context.GetContent(storeData.GetNicoID(), "コメントのダウンロード"))
+                if (!await context.GetContent(id, "コメントのダウンロード"))
                 {
                     logger.Error("セッションの確立に失敗しました。");
                     return NicoEnums::GenelicErrorCode.ERROR;
@@ -475,7 +506,7 @@ namespace Nicome.WWW.Comment
             {
                 logger.Debug("コメ数調節処理を開始", moduleName);
                 this.RemoveOld(this.Count - (int)this.GetMaxComments());
-                logger.Debug("コメ数調節処理を開始", moduleName);
+                logger.Debug("コメ数調節処理が完了", moduleName);
             }
         }
 

@@ -31,10 +31,12 @@ namespace Nicome.IO
         {
             var store = new Store.Store().GetData();
             string format = store.GetVideoFileFormat();
-            return format.Replace("<id>", video.Id)
+            return this.RemoveInvalidChar(
+                format.Replace("<id>", video.Id)
                 .Replace("<title>", video.Title)
                 .Replace("<user>", video.User)
-                + ".xml";
+                + ".xml"
+                );
         }
 
         /// <summary>
@@ -65,18 +67,17 @@ namespace Nicome.IO
         /// </summary>
         public bool TryWriteComment(List<JsonComment> comments)
         {
-            CreateFolderIfNotExist();
+            var io = new Utils.IO();
             string commentString = ConvertToString(comments);
             var logger = NicoLogger.GetLogger();
 
+            io.CreateFolderIfNotExist(FolderPath);
+
             try
             {
-                using (var fs = new StreamWriter(FilePath))
-                {
-                    logger.Debug("コメントファイルへの書き込みを開始", moduleName);
-                    fs.Write(commentString);
-                    logger.Debug("コメントファイルへの書き込みが完了", moduleName);
-                }
+                logger.Debug("コメントファイルへの書き込みを開始", moduleName);
+                io.Write(commentString, FilePath);
+                logger.Debug("コメントファイルへの書き込みが完了", moduleName);
             }
             catch (Exception e)
             {
@@ -115,8 +116,28 @@ namespace Nicome.IO
                 }
 
                 logger.Log("保存先のフォルダーが存在しなかった為、新規作成しました。");
-                logger.Debug($"パス: {FolderPath}",moduleName);
+                logger.Debug($"パス: {FolderPath}", moduleName);
             }
         }
+
+        /// <summary>
+        /// 禁則文字を削除する
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        private string RemoveInvalidChar(string origin)
+        {
+            return origin
+                .Replace("\\", "")
+                .Replace("/", "")
+                .Replace(":", "")
+                .Replace("*", "")
+                .Replace("?", "")
+                .Replace("\"", "")
+                .Replace("<", "")
+                .Replace(">", "")
+                .Replace("|", "");
+        }
+
     }
 }

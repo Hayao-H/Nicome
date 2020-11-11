@@ -142,6 +142,9 @@ namespace Nicome.CLI
             AddOption("pass", NicoEnums::Option.PASS);
             AddOption("comlog", NicoEnums::Option.COM_LOG);
             AddOption("maxcom", NicoEnums::Option.MAX_COM);
+            AddOption("overwrite", NicoEnums::Option.OVERWRITE);
+            AddOption("dontoverwrite", NicoEnums::Option.DONT_OVERWRITE);
+            AddOption("channel", NicoEnums::Option.CHANNEL);
             //時間制NG
             AddOption("ngft", NicoEnums::Option.NG_BY_TIME);
             AddOption("ngftvpdt", NicoEnums::Option.NG_FROM_POST_DATETIME);
@@ -267,6 +270,33 @@ namespace Nicome.CLI
                 if (Regex.IsMatch(argment, "^(-m|--max-comment)$"))
                 {
                     argment = "maxcom";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-y|--allow-overwrite)$"))
+                {
+                    argment = "overwrite";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-n|--disallow-overwrite)$"))
+                {
+                    argment = "dontoverwrite";
+                }
+                return argment;
+            });
+
+            AddOptionFilter((string argment) =>
+            {
+                if (Regex.IsMatch(argment, "^(-c|--channel)$"))
+                {
+                    argment = "channel";
                 }
                 return argment;
             });

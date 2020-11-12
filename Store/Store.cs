@@ -208,7 +208,7 @@ namespace Nicome.Store
                 }
                 if (arg != null && arg.Parameter != null)
                 {
-                    Store.data.Download.ChannnelName = arg.Parameter;
+                    Store.data.Download.ChannnelName = NicoUtl::UrlUtils.GetChannelID(arg.Parameter);
                 }
             }
 

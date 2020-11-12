@@ -226,4 +226,49 @@ namespace Nicome.Utils
             return Regex.Replace(origin, r, "", RegexOptions.Compiled);
         }
     }
+    class UrlUtils
+    {
+        /// <summary>
+        /// URLからチャンネル名を取得する
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static string GetChannelID(string origin)
+        {
+            string formated = origin;
+            formated = UrlUtils.RemoveSearch(formated);
+            formated = UrlUtils.GetDirecttory(formated);
+            return formated;
+        }
+
+        /// <summary>
+        /// URLのディレクトリーを取得
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static string GetDirecttory(string origin)
+        {
+            string[] splited = origin.Split('/');
+            return splited[splited.Length - 1].Length != 0 ? splited[splited.Length - 1] : splited[splited.Length - 2];
+        }
+
+        /// <summary>
+        /// searchパラメーターを削除
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public static string RemoveSearch(string origin)
+        {
+            if (!origin.Contains('?'))
+            {
+                return origin;
+            }
+            else
+            {
+                return origin.Substring(0, origin.IndexOf('?'));
+            }
+
+        }
+    }
+
 }
